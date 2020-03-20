@@ -12,14 +12,20 @@ public class MovingManager : MonoBehaviour
     private GameObject PlayerTwo;
 
     //Variables
+    //dices
     public int diceRoll;
+    public int LastRoll = 0;
     private int i;
-    public int LastRoll=0;
+
+    //players
+    public float JumpHeight;
+    [Range(0.1f, 10)]
+    private float Jump=0.25f;
 
     //AnimationSpeed
     [Range(0.1f, 10)]
     public float animationTime;
-    public float Height;
+    
 
     private void Awake()
     {
@@ -57,13 +63,16 @@ public class MovingManager : MonoBehaviour
         for (i = 0; i <= diceRoll; i++)
         {
             //amount  by which the player is raised on move
-            //Height = Tiles[i + LastRoll].transform.position.y + Tiles[i+ LastRoll + 1].transform.position.y/3;
-            if(Tiles[i + LastRoll].transform.position.y == Tiles[i + LastRoll + 1].transform.position.y)
-                Height = Tiles[i + LastRoll + 1].transform.position.y +.25f;
-            else
-                Height = Tiles[i + LastRoll + 1].transform.position.y + .25f;
-
-            Debug.Log(i);
+            if (Tiles[i + LastRoll].transform.position.y > Tiles[LastRoll].transform.position.y)
+            {
+                JumpHeight = Jump + (Tiles[i + LastRoll].transform.position.y- Tiles[LastRoll].transform.position.y);
+                Debug.Log("tes1");
+            }   
+            else if (Tiles[i + LastRoll].transform.position.y <= Tiles[LastRoll].transform.position.y) 
+            {
+                JumpHeight = Jump;
+                Debug.Log("tes2");
+            }  
 
             //move and lift the player one tile at the time
             if (i!=0)
@@ -75,7 +84,7 @@ public class MovingManager : MonoBehaviour
 
                 Sequence Jump = DOTween.Sequence();
                 Jump.PrependInterval(animationTime / 10)
-                    .Append(PlayerOne.transform.DOMoveY(Height, animationTime / 2).SetEase(Ease.InOutCubic))
+                    .Append(PlayerOne.transform.DOMoveY(PlayerOne.transform.position.y + JumpHeight, animationTime / 2).SetEase(Ease.InOutCubic))
                     .Append(PlayerOne.transform.DOMoveY(Tiles[i + LastRoll].transform.position.y, animationTime / 2).SetEase(Ease.InOutCubic));
 
                 yield return new WaitForSeconds(animationTime+0.5f);
