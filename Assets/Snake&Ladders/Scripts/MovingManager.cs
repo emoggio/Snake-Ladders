@@ -8,15 +8,18 @@ public class MovingManager : MonoBehaviour
 {
     //gameobjects
     public GameObject[] Tiles;
-    public GameObject PlayerOne;
-    public GameObject PlayerTwo;
+    private GameObject PlayerOne;
+    private GameObject PlayerTwo;
 
     //Variables
     public int diceRoll;
+    private int i;
+    public int LastRoll=0;
 
     //AnimationSpeed
     [Range(0.1f, 10)]
     public float animationTime;
+    public float Height;
 
     private void Awake()
     {
@@ -44,38 +47,42 @@ public class MovingManager : MonoBehaviour
     //roll the dice
     public void DiceRoll()
     {
-        diceRoll = (Random.Range(1, 2));
-        //Invoke("MovePlayerOne", 0.1f);
-
-        Sequence MoveAndJump = DOTween.Sequence();
-        MoveAndJump.Join(PlayerOne.transform.DOMoveX(Tiles[1].transform.position.x, animationTime).SetEase(Ease.InOutCubic))
-            .Join(PlayerOne.transform.DOMoveZ(Tiles[1].transform.position.z, animationTime).SetEase(Ease.InOutCubic))
-            .Join(PlayerOne.transform.DOMoveY(1, animationTime/2).SetEase(Ease.InOutCubic).SetLoops(2, LoopType.Yoyo));
-            //.AppendInterval(animationTime / 2)
-           //.Join(PlayerOne.transform.DOMoveY(0, animationTime).SetEase(Ease.OutCubic));
-
-        //StartCoroutine(MovePlayerOne());
+        diceRoll = (Random.Range(1, 5));
+       // Height = ((Tiles[0].transform.position - Tiles[1].transform.position)/3).magnitude;
+        StartCoroutine(MovePlayerOne());
     }
 
     IEnumerator MovePlayerOne()
     {
-        yield return new WaitForSeconds(1.0f);
-
-        for (int i = 0; i <= diceRoll; i++)
+        for (i = 0; i <= diceRoll; i++)
         {
-            Debug.Log("start");
+            //amount  by which the player is raised on move
+            //Height = Tiles[i + LastRoll].transform.position.y + Tiles[i+ LastRoll + 1].transform.position.y/3;
+            if(Tiles[i + LastRoll].transform.position.y == Tiles[i + LastRoll + 1].transform.position.y)
+                Height = Tiles[i + LastRoll + 1].transform.position.y +.25f;
+            else
+                Height = Tiles[i + LastRoll + 1].transform.position.y + .25f;
 
-            yield return new WaitForSeconds(3.0f);
+            Debug.Log(i);
 
-            Sequence MoveAndJump = DOTween.Sequence();
-            MoveAndJump.PrependInterval(0.3f)
-                //.Append(PlayerOne.transform.DOMove(Tiles[i].transform.position, animationTime).SetEase(Ease.InOutCubic))
-                .Append(PlayerOne.transform.DOMoveY(1, animationTime/2).SetEase(Ease.InOutCubic))
-                .AppendInterval(animationTime / 2)
-                .Append(PlayerOne.transform.DOMoveY(0, animationTime).SetEase(Ease.InOutCubic));
+            //move and lift the player one tile at the time
+            if (i!=0)
+            {
+                Sequence Move = DOTween.Sequence();
+                Move.PrependInterval(animationTime / 10)
+                    .Append(PlayerOne.transform.DOMoveX(Tiles[i + LastRoll].transform.position.x, animationTime).SetEase(Ease.InOutCubic))
+                    .Join(PlayerOne.transform.DOMoveZ(Tiles[i + LastRoll].transform.position.z, animationTime).SetEase(Ease.InOutCubic));
 
-            Debug.Log("end");
+                Sequence Jump = DOTween.Sequence();
+                Jump.PrependInterval(animationTime / 10)
+                    .Append(PlayerOne.transform.DOMoveY(Height, animationTime / 2).SetEase(Ease.InOutCubic))
+                    .Append(PlayerOne.transform.DOMoveY(Tiles[i + LastRoll].transform.position.y, animationTime / 2).SetEase(Ease.InOutCubic));
+
+                yield return new WaitForSeconds(animationTime+0.5f);
+            }
         }
-    }
 
+        //pick up from your last tile
+        LastRoll = LastRoll+ diceRoll;
+    }
 }
