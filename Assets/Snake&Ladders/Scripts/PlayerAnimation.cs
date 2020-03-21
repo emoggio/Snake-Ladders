@@ -67,6 +67,7 @@ public class PlayerAnimation : MonoBehaviour
         {
             if (FigureOne != null && PlayerOne != null && movingManager.myTurn)
             {
+                Debug.Log("test1");
                 Sequence spin = DOTween.Sequence();
                 spin.Append(PlayerOne.transform.DOLocalMoveY(Gitter * 3, animationTime).SetEase(Ease.InOutQuad).SetLoops(1, LoopType.Yoyo))
                     .Join(FigureOne.transform.DORotate(new Vector3(0, Rotation * 360, 0), animationTime * Rotation).SetEase(Ease.InOutQuad));
@@ -74,6 +75,7 @@ public class PlayerAnimation : MonoBehaviour
 
             if (FigureTwo != null && PlayerTwo != null && !movingManager.myTurn)
             {
+                Debug.Log("test2");
                 Sequence spin = DOTween.Sequence();
                 spin.Append(PlayerTwo.transform.DOLocalMoveY(Gitter * 3, animationTime).SetEase(Ease.InOutQuad).SetLoops(1, LoopType.Yoyo))
                     .Join(FigureTwo.transform.DORotate(new Vector3(0, Rotation * 360, 0), animationTime * Rotation).SetEase(Ease.InOutQuad));

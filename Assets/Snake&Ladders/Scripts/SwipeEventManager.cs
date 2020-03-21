@@ -10,7 +10,7 @@ public class SwipeEventManager : MonoBehaviour
     public float minTime;
     [Range(0.1f, 10f)]
     public float maxTime;
-    [Range(100, 1000)]
+    [Range(50, 1000)]
     public int minSwipeDist;
 
     float startTime;
@@ -18,8 +18,9 @@ public class SwipeEventManager : MonoBehaviour
 
     Vector3 startPos;
     Vector3 endPos;
-
-    float swipeDist;
+    
+    //[HideInInspector]
+    public float swipeDist;
     float swipeTime;
 
     //events
@@ -66,7 +67,6 @@ public class SwipeEventManager : MonoBehaviour
             }
         }
     }
-
 
     //finger swiping method
     void Swipeing()

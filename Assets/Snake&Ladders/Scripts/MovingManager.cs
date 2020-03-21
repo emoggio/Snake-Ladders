@@ -59,7 +59,6 @@ public class MovingManager : MonoBehaviour
     {
         diceRoll = (Random.Range(1, 6));
         
-
         if (myTurn)
             StartCoroutine(MovePlayerOne());
         else if (!myTurn)
@@ -69,6 +68,9 @@ public class MovingManager : MonoBehaviour
     //player
     IEnumerator MovePlayerOne()
     {
+
+        yield return new WaitForSeconds(1);
+
         if (LastPlayerRoll < Tiles.Length)
         {
             for (i = 0; i <= diceRoll; i++)
@@ -77,12 +79,10 @@ public class MovingManager : MonoBehaviour
                 if (Tiles[i + LastPlayerRoll].transform.position.y > Tiles[LastPlayerRoll].transform.position.y)
                 {
                     JumpHeight = Jump + (Tiles[i + LastPlayerRoll].transform.position.y- Tiles[LastPlayerRoll].transform.position.y);
-                    Debug.Log("tes1");
                 }   
                 else if (Tiles[i + LastPlayerRoll].transform.position.y <= Tiles[LastPlayerRoll].transform.position.y) 
                 {
                     JumpHeight = Jump;
-                    Debug.Log("tes2");
                 }  
 
                 //move and lift the player one tile at the time
@@ -118,6 +118,8 @@ public class MovingManager : MonoBehaviour
     //cpu
     IEnumerator MovePlayerTwo()
     {
+        yield return new WaitForSeconds(1);
+
         if (LastCpuRoll < Tiles.Length)
         {
             for (i = 0; i <= diceRoll; i++)
@@ -126,12 +128,10 @@ public class MovingManager : MonoBehaviour
                 if (Tiles[i + LastCpuRoll].transform.position.y > Tiles[LastCpuRoll].transform.position.y)
                 {
                     JumpHeight = Jump + (Tiles[i + LastCpuRoll].transform.position.y - Tiles[LastCpuRoll].transform.position.y);
-                    Debug.Log("tes1");
                 }
                 else if (Tiles[i + LastCpuRoll].transform.position.y <= Tiles[LastCpuRoll].transform.position.y)
                 {
                     JumpHeight = Jump;
-                    Debug.Log("tes2");
                 }
 
                 //move and lift the player one tile at the time
