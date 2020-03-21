@@ -12,6 +12,9 @@ public class PlayerAnimation : MonoBehaviour
     private GameObject PlayerTwo;
     private GameObject FigureTwo;
 
+    private GameObject Manager;
+    MovingManager movingManager;
+
     //AnimationVaribale
     [Range(0.01f, 0.1f)]
     public float Gitter;
@@ -26,6 +29,10 @@ public class PlayerAnimation : MonoBehaviour
 
     private void Awake()
     {
+        Manager = GameObject.FindGameObjectWithTag("manager");
+        if(Manager!= null)
+            movingManager = Manager.GetComponent<MovingManager>();
+
         PlayerOne = GameObject.FindGameObjectWithTag("Player");
         PlayerTwo = GameObject.FindGameObjectWithTag("cpu");
 
@@ -54,23 +61,23 @@ public class PlayerAnimation : MonoBehaviour
             FigureTwo.transform.DOLocalMoveY(Gitter, animationTime).SetEase(Ease.InOutQuad).SetLoops(-1, LoopType.Yoyo);
     }
 
-    public void PlayerExcitement()
+    public void Excitement()
     {
-        if (FigureOne != null && PlayerOne!=null)
+        if (Manager != null)
         {
-            Sequence spin = DOTween.Sequence();
-            spin.Append(PlayerOne.transform.DOLocalMoveY(Gitter * 3, animationTime).SetEase(Ease.InOutQuad).SetLoops(1, LoopType.Yoyo))
-                .Join(FigureOne.transform.DORotate(new Vector3(0, Rotation * 360, 0), animationTime * Rotation).SetEase(Ease.InOutQuad));
-        }
-    }
+            if (FigureOne != null && PlayerOne != null && movingManager.myTurn)
+            {
+                Sequence spin = DOTween.Sequence();
+                spin.Append(PlayerOne.transform.DOLocalMoveY(Gitter * 3, animationTime).SetEase(Ease.InOutQuad).SetLoops(1, LoopType.Yoyo))
+                    .Join(FigureOne.transform.DORotate(new Vector3(0, Rotation * 360, 0), animationTime * Rotation).SetEase(Ease.InOutQuad));
+            }
 
-    public void CpuExcitement()
-    {
-        if (FigureTwo != null && PlayerTwo != null)
-        {
-            Sequence spin = DOTween.Sequence();
-            spin.Append(PlayerTwo.transform.DOLocalMoveY(Gitter * 3, animationTime).SetEase(Ease.InOutQuad).SetLoops(1, LoopType.Yoyo))
-                .Join(FigureTwo.transform.DORotate(new Vector3(0, Rotation * 360, 0), animationTime * Rotation).SetEase(Ease.InOutQuad));
+            if (FigureTwo != null && PlayerTwo != null && !movingManager.myTurn)
+            {
+                Sequence spin = DOTween.Sequence();
+                spin.Append(PlayerTwo.transform.DOLocalMoveY(Gitter * 3, animationTime).SetEase(Ease.InOutQuad).SetLoops(1, LoopType.Yoyo))
+                    .Join(FigureTwo.transform.DORotate(new Vector3(0, Rotation * 360, 0), animationTime * Rotation).SetEase(Ease.InOutQuad));
+            }
         }
     }
 }

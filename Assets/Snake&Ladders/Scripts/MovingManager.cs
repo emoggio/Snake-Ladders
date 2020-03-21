@@ -14,8 +14,12 @@ public class MovingManager : MonoBehaviour
     //Variables
     //dices
     public int diceRoll;
-    public int LastRoll = 0;
+    public int LastPlayerRoll = 0;
+    public int LastCpuRoll = 0;
     private int i;
+
+    //turns
+    public bool myTurn = true;
 
     //players
     public float JumpHeight;
@@ -53,45 +57,108 @@ public class MovingManager : MonoBehaviour
     //roll the dice
     public void DiceRoll()
     {
-        diceRoll = (Random.Range(1, 5));
-       // Height = ((Tiles[0].transform.position - Tiles[1].transform.position)/3).magnitude;
-        StartCoroutine(MovePlayerOne());
+        diceRoll = (Random.Range(1, 6));
+        
+
+        if (myTurn)
+            StartCoroutine(MovePlayerOne());
+        else if (!myTurn)
+            StartCoroutine(MovePlayerTwo());
     }
 
+    //player
     IEnumerator MovePlayerOne()
     {
-        for (i = 0; i <= diceRoll; i++)
+        if (LastPlayerRoll < Tiles.Length)
         {
-            //amount  by which the player is raised on move
-            if (Tiles[i + LastRoll].transform.position.y > Tiles[LastRoll].transform.position.y)
+            for (i = 0; i <= diceRoll; i++)
             {
-                JumpHeight = Jump + (Tiles[i + LastRoll].transform.position.y- Tiles[LastRoll].transform.position.y);
-                Debug.Log("tes1");
-            }   
-            else if (Tiles[i + LastRoll].transform.position.y <= Tiles[LastRoll].transform.position.y) 
-            {
-                JumpHeight = Jump;
-                Debug.Log("tes2");
-            }  
+                //amount  by which the player is raised on move
+                if (Tiles[i + LastPlayerRoll].transform.position.y > Tiles[LastPlayerRoll].transform.position.y)
+                {
+                    JumpHeight = Jump + (Tiles[i + LastPlayerRoll].transform.position.y- Tiles[LastPlayerRoll].transform.position.y);
+                    Debug.Log("tes1");
+                }   
+                else if (Tiles[i + LastPlayerRoll].transform.position.y <= Tiles[LastPlayerRoll].transform.position.y) 
+                {
+                    JumpHeight = Jump;
+                    Debug.Log("tes2");
+                }  
 
-            //move and lift the player one tile at the time
-            if (i!=0)
-            {
-                Sequence Move = DOTween.Sequence();
-                Move.PrependInterval(animationTime / 10)
-                    .Append(PlayerOne.transform.DOMoveX(Tiles[i + LastRoll].transform.position.x, animationTime).SetEase(Ease.InOutCubic))
-                    .Join(PlayerOne.transform.DOMoveZ(Tiles[i + LastRoll].transform.position.z, animationTime).SetEase(Ease.InOutCubic));
+                //move and lift the player one tile at the time
+                if (i!=0)
+                {
+                    Sequence Move = DOTween.Sequence();
+                    Move.PrependInterval(animationTime / 10)
+                        .Append(PlayerOne.transform.DOMoveX(Tiles[i + LastPlayerRoll].transform.position.x, animationTime).SetEase(Ease.InOutCubic))
+                        .Join(PlayerOne.transform.DOMoveZ(Tiles[i + LastPlayerRoll].transform.position.z, animationTime).SetEase(Ease.InOutCubic));
 
-                Sequence Jump = DOTween.Sequence();
-                Jump.PrependInterval(animationTime / 10)
-                    .Append(PlayerOne.transform.DOMoveY(PlayerOne.transform.position.y + JumpHeight, animationTime / 2).SetEase(Ease.InOutCubic))
-                    .Append(PlayerOne.transform.DOMoveY(Tiles[i + LastRoll].transform.position.y, animationTime / 2).SetEase(Ease.InOutCubic));
+                    Sequence Jump = DOTween.Sequence();
+                    Jump.PrependInterval(animationTime / 10)
+                        .Append(PlayerOne.transform.DOMoveY(PlayerOne.transform.position.y + JumpHeight, animationTime / 2).SetEase(Ease.InOutCubic))
+                        .Append(PlayerOne.transform.DOMoveY(Tiles[i + LastPlayerRoll].transform.position.y, animationTime / 2).SetEase(Ease.InOutCubic));
 
-                yield return new WaitForSeconds(animationTime+0.5f);
+                    yield return new WaitForSeconds(animationTime+0.5f);
+                }
             }
-        }
 
-        //pick up from your last tile
-        LastRoll = LastRoll+ diceRoll;
+            //pick up from your last tile
+            LastPlayerRoll = LastPlayerRoll + diceRoll;
+
+            //swich turns
+            myTurn = !myTurn;
+            Invoke("DiceRoll", 1);
+        }
+        else if (LastCpuRoll >= Tiles.Length)
+        {
+            Debug.Log("you Win");
+        }
+    }
+
+    //cpu
+    IEnumerator MovePlayerTwo()
+    {
+        if (LastCpuRoll < Tiles.Length)
+        {
+            for (i = 0; i <= diceRoll; i++)
+            {
+                //amount  by which the player is raised on move
+                if (Tiles[i + LastCpuRoll].transform.position.y > Tiles[LastCpuRoll].transform.position.y)
+                {
+                    JumpHeight = Jump + (Tiles[i + LastCpuRoll].transform.position.y - Tiles[LastCpuRoll].transform.position.y);
+                    Debug.Log("tes1");
+                }
+                else if (Tiles[i + LastCpuRoll].transform.position.y <= Tiles[LastCpuRoll].transform.position.y)
+                {
+                    JumpHeight = Jump;
+                    Debug.Log("tes2");
+                }
+
+                //move and lift the player one tile at the time
+                if (i != 0)
+                {
+                    Sequence Move = DOTween.Sequence();
+                    Move.PrependInterval(animationTime / 10)
+                        .Append(PlayerTwo.transform.DOMoveX(Tiles[i + LastCpuRoll].transform.position.x, animationTime).SetEase(Ease.InOutCubic))
+                        .Join(PlayerTwo.transform.DOMoveZ(Tiles[i + LastCpuRoll].transform.position.z, animationTime).SetEase(Ease.InOutCubic));
+
+                    Sequence Jump = DOTween.Sequence();
+                    Jump.PrependInterval(animationTime / 10)
+                        .Append(PlayerTwo.transform.DOMoveY(PlayerTwo.transform.position.y + JumpHeight, animationTime / 2).SetEase(Ease.InOutCubic))
+                        .Append(PlayerTwo.transform.DOMoveY(Tiles[i + LastCpuRoll].transform.position.y, animationTime / 2).SetEase(Ease.InOutCubic));
+
+                    yield return new WaitForSeconds(animationTime + 0.5f);
+                }
+            }
+
+            //pick up from your last tile
+            LastCpuRoll = LastCpuRoll + diceRoll;
+
+            myTurn = !myTurn;
+        }
+        else if (LastCpuRoll >= Tiles.Length)
+        {
+            Debug.Log("you Lose");
+        }
     }
 }
