@@ -22,20 +22,22 @@ public class DiceRoll : MonoBehaviour
         if (Manager != null)
             swipeEventManager = Manager.GetComponent<SwipeEventManager>();
 
-        //SwipeSpeed = swipeEventManager.swipeDist;
+        SwipeSpeed = swipeEventManager.swipeDist;
 
         SpawnLocation = this.transform;
     }
     public void Roll()
     {
-        SwipeSpeed =300;
+        if(SwipeSpeed==0)
+            SwipeSpeed =300;
 
         // Create an instance of the dice and store a reference to it's rigidbody.
         DiceClone = Instantiate(Dice, SpawnLocation.position, SpawnLocation.rotation) as Rigidbody;
         DiceClone.useGravity = true;
 
-        // Set the Dice velocity to the launch force in the fire position's forward direction.
-        DiceClone.velocity = SwipeSpeed/100 * SpawnLocation.forward; ;
+        // Set the Dice velocity and rotation to the launch force in the fire position's forward direction.
+        DiceClone.velocity = SwipeSpeed/100 * SpawnLocation.forward;
+        DiceClone.angularVelocity = SwipeSpeed / 50 * SpawnLocation.forward;
 
         // Reset the swipe Speed.(just a precaution)
         SwipeSpeed = MinSpeed;

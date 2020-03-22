@@ -6,7 +6,12 @@ public class FX : MonoBehaviour
 {
     public GameObject Explosion;
    
-    void Start()
+    public void StartPlaying()
+    {
+        Invoke("FXExplosion", 2.5f);
+    }
+
+    public void FXExplosion()
     {
         GameObject explostion = Instantiate(Explosion, transform.position, Quaternion.identity);
 

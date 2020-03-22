@@ -7,7 +7,7 @@ using System.Linq;
 public class MovingManager : MonoBehaviour
 {
     //gameobjects
-    public GameObject[] Tiles;
+    private GameObject[] Tiles;
     private GameObject PlayerOne;
     private GameObject PlayerTwo;
 
@@ -33,7 +33,7 @@ public class MovingManager : MonoBehaviour
     public bool myTurn = true;
 
     //players
-    public float JumpHeight;
+    private float JumpHeight;
     [Range(0.1f, 10)]
     private float Jump=0.25f;
 
