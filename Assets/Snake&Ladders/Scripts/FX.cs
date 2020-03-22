@@ -5,7 +5,7 @@ using UnityEngine;
 public class FX : MonoBehaviour
 {
     public GameObject Explosion;
-    // Start is called before the first frame update
+   
     void Start()
     {
         GameObject explostion = Instantiate(Explosion, transform.position, Quaternion.identity);
