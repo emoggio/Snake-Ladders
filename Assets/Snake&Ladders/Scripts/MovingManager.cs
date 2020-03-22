@@ -13,6 +13,7 @@ public class MovingManager : MonoBehaviour
 
     private GameObject Manager;
     PlayerAnimation playerAnimation;
+    UIManager uiManager;
 
     //Variables
     //dices
@@ -36,10 +37,11 @@ public class MovingManager : MonoBehaviour
 
     private void Awake()
     {
-        //
+        //check that the manager exists
         Manager = GameObject.FindGameObjectWithTag("manager");
         if (Manager != null)
             playerAnimation = Manager.GetComponent<PlayerAnimation>();
+            uiManager = Manager.GetComponent<UIManager>();
 
         //find all tiles and order them alphabetically
         Tiles = GameObject.FindGameObjectsWithTag("tile").OrderBy(go => go.name).ToArray();
@@ -66,11 +68,17 @@ public class MovingManager : MonoBehaviour
     public void DiceRoll()
     {
         diceRoll = (Random.Range(1, 6));
-        
+
         if (myTurn)
+        {
             StartCoroutine(MovePlayerOne());
+            uiManager.UpdateDiceRollPlayer();
+        }
         else if (!myTurn)
+        {
             StartCoroutine(MovePlayerTwo());
+            uiManager.UpdateDiceRollCpu();
+        }
     }
 
     //player

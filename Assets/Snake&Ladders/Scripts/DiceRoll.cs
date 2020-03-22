@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class DiceRoll : MonoBehaviour
 {
-    //private GameObject Manager;
-    //SwipeEventManager swipeEventManager;
+    private GameObject Manager;
+    SwipeEventManager swipeEventManager;
 
     //spawn object and location
     public Rigidbody Dice;
@@ -18,11 +18,13 @@ public class DiceRoll : MonoBehaviour
 
     private void Awake()
     {
-        //Manager = GameObject.FindGameObjectWithTag("manager");
-        //if (Manager != null)
-        //    swipeEventManager = Manager.GetComponent<SwipeEventManager>();
-        SpawnLocation = this.transform;
+        Manager = GameObject.FindGameObjectWithTag("manager");
+        if (Manager != null)
+            swipeEventManager = Manager.GetComponent<SwipeEventManager>();
+
         //SwipeSpeed = swipeEventManager.swipeDist;
+
+        SpawnLocation = this.transform;
     }
     public void Roll()
     {
