@@ -71,30 +71,53 @@ public class MovingManager : MonoBehaviour
             return;
     }
 
+    //resetThePlayers
+    public void ResetPosition()
+    {
+        //move the players to the start
+        if (PlayerOne != null)
+            PlayerOne.transform.DOMove(Tiles[0].transform.position, 0);
+        else
+            return;
+
+        if (PlayerTwo != null)
+            PlayerTwo.transform.DOMove(Tiles[0].transform.position, 0);
+        else
+            return;
+
+        LastCpuRoll = 0;
+        LastPlayerRoll = 0;
+
+        uiManager.YouLose.SetActive(false);
+        uiManager.YouWin.SetActive(false);
+    }
+
     //roll the dice
     public void DiceRoll()
     {
-        diceRoll = (Random.Range(3, 4));
+        diceRoll = (Random.Range(1, 6));
 
         if (myTurn)
-        {
-            StartCoroutine(MovePlayerOne());
             uiManager.UpdateDiceRollPlayer();
-        }
         else if (!myTurn)
-        {
-            StartCoroutine(MovePlayerTwo());
             uiManager.UpdateDiceRollCpu();
-        }
+    }
+
+    //moveThePlayers
+    public void moveThePlayers()
+    {
+        if (myTurn)
+            StartCoroutine(MovePlayerOne());
+        else if (!myTurn)
+            StartCoroutine(MovePlayerTwo());
     }
 
     //player
     IEnumerator MovePlayerOne()
     {
-
         yield return new WaitForSeconds(.5f);
 
-        if (LastPlayerRoll < Tiles.Length)
+        if (LastPlayerRoll + diceRoll < Tiles.Length)
         {
             for (i = 0; i <= diceRoll; i++)
             {
@@ -175,11 +198,44 @@ public class MovingManager : MonoBehaviour
 
             //swich turns
             myTurn = !myTurn;
+
             //make the other player excited
             playerAnimation.Excitement();
         }
-        else if (LastCpuRoll >= Tiles.Length)
+        else if (LastPlayerRoll + diceRoll >= Tiles.Length)
         {
+            //for (i = 0; i <= diceRoll; i++)
+            diceRoll = Mathf.Abs(Tiles.Length - (LastPlayerRoll + diceRoll));
+            for (i = 0; i <= diceRoll; i++)
+            {
+                //amount  by which the player is raised on move
+                if (Tiles[i + LastPlayerRoll].transform.position.y > Tiles[LastPlayerRoll].transform.position.y)
+                {
+                    JumpHeight = Jump + (Tiles[i + LastPlayerRoll].transform.position.y - Tiles[LastPlayerRoll].transform.position.y);
+                }
+                else if (Tiles[i + LastPlayerRoll].transform.position.y <= Tiles[LastPlayerRoll].transform.position.y)
+                {
+                    JumpHeight = Jump;
+                }
+
+                //move and lift the player one tile at the time
+                if (i != 0)
+                {
+                    Sequence Move = DOTween.Sequence();
+                    Move.PrependInterval(animationTime / 10)
+                        .Append(PlayerOne.transform.DOMoveX(Tiles[i + LastPlayerRoll].transform.position.x, animationTime).SetEase(Ease.InOutCubic))
+                        .Join(PlayerOne.transform.DOMoveZ(Tiles[i + LastPlayerRoll].transform.position.z, animationTime).SetEase(Ease.InOutCubic));
+
+                    Sequence Jump = DOTween.Sequence();
+                    Jump.PrependInterval(animationTime / 10)
+                        .Append(PlayerOne.transform.DOMoveY(PlayerOne.transform.position.y + JumpHeight, animationTime / 2).SetEase(Ease.InOutCubic))
+                        .Append(PlayerOne.transform.DOMoveY(Tiles[i + LastPlayerRoll].transform.position.y, animationTime / 2).SetEase(Ease.InOutCubic));
+
+                    yield return new WaitForSeconds(animationTime + 0.5f);
+                }
+            }
+
+            uiManager.Win();
             Debug.Log("you Win");
         }    
     }
@@ -189,7 +245,7 @@ public class MovingManager : MonoBehaviour
     {
         yield return new WaitForSeconds(.5f);
 
-        if (LastCpuRoll < Tiles.Length)
+        if (LastCpuRoll + diceRoll < Tiles.Length)
         {
             for (i = 0; i <= diceRoll; i++)
             {
@@ -268,8 +324,39 @@ public class MovingManager : MonoBehaviour
             //switch turns
             myTurn = !myTurn;
         }
-        else if (LastCpuRoll >= Tiles.Length)
+        else if (LastCpuRoll + diceRoll >= Tiles.Length)
         {
+            diceRoll = Mathf.Abs(Tiles.Length - (LastCpuRoll + diceRoll));
+            for (i = 0; i <= diceRoll; i++)
+            {
+                //amount  by which the player is raised on move
+                if (Tiles[i + LastCpuRoll].transform.position.y > Tiles[LastCpuRoll].transform.position.y)
+                {
+                    JumpHeight = Jump + (Tiles[i + LastCpuRoll].transform.position.y - Tiles[LastCpuRoll].transform.position.y);
+                }
+                else if (Tiles[i + LastCpuRoll].transform.position.y <= Tiles[LastCpuRoll].transform.position.y)
+                {
+                    JumpHeight = Jump;
+                }
+
+                //move and lift the player one tile at the time
+                if (i != 0)
+                {
+                    Sequence Move = DOTween.Sequence();
+                    Move.PrependInterval(animationTime / 10)
+                        .Append(PlayerTwo.transform.DOMoveX(Tiles[i + LastCpuRoll].transform.position.x, animationTime).SetEase(Ease.InOutCubic))
+                        .Join(PlayerTwo.transform.DOMoveZ(Tiles[i + LastCpuRoll].transform.position.z, animationTime).SetEase(Ease.InOutCubic));
+
+                    Sequence Jump = DOTween.Sequence();
+                    Jump.PrependInterval(animationTime / 10)
+                        .Append(PlayerTwo.transform.DOMoveY(PlayerTwo.transform.position.y + JumpHeight, animationTime / 2).SetEase(Ease.InOutCubic))
+                        .Append(PlayerTwo.transform.DOMoveY(Tiles[i + LastCpuRoll].transform.position.y, animationTime / 2).SetEase(Ease.InOutCubic));
+
+                    yield return new WaitForSeconds(animationTime + 0.5f);
+                }
+            }
+
+            uiManager.Lose();
             Debug.Log("you Lose");
         }
     }

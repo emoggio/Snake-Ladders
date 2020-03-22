@@ -70,19 +70,21 @@ public class PlayerAnimation : MonoBehaviour
                 var angle = new Vector3(0, Rotation * 360, 0);
 
                 Sequence spin = DOTween.Sequence();
-                spin.Append(PlayerOne.transform.DOLocalMoveY(Gitter * 3, animationTime).SetEase(Ease.InOutQuad).SetLoops(2, LoopType.Yoyo))
+                spin.Append(PlayerOne.transform.DOMoveY(Gitter * 3, animationTime).SetEase(Ease.InOutQuad).SetLoops(2, LoopType.Yoyo))
                     .Join(FigureOne.transform.DORotate(angle, animationTime * Rotation, RotateMode.LocalAxisAdd).SetEase(Ease.InOutQuad))
-                    .AppendCallback(movingManager.DiceRoll);
+                    .AppendCallback(movingManager.moveThePlayers);
             }
 
             if (FigureTwo != null && PlayerTwo != null && !movingManager.myTurn)
             {
                 var angle = new Vector3(0, Rotation * 360, 0);
 
+                movingManager.DiceRoll();
+
                 Sequence spin = DOTween.Sequence();
-                spin.Append(PlayerTwo.transform.DOLocalMoveY(Gitter * 3, animationTime).SetEase(Ease.InOutQuad).SetLoops(2, LoopType.Yoyo))
+                spin.Append(PlayerTwo.transform.DOMoveY(Gitter * 3, animationTime).SetEase(Ease.InOutQuad).SetLoops(2, LoopType.Yoyo))
                     .Join(FigureTwo.transform.DORotate(angle, animationTime * Rotation, RotateMode.LocalAxisAdd).SetEase(Ease.InOutQuad))
-                    .AppendCallback(movingManager.DiceRoll);
+                    .AppendCallback(movingManager.moveThePlayers);
             }
         }
     }
