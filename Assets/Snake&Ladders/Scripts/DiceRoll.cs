@@ -26,9 +26,10 @@ public class DiceRoll : MonoBehaviour
 
         SpawnLocation = this.transform;
     }
+
     public void Roll()
     {
-        if(SwipeSpeed==0)
+        if(SwipeSpeed<300)
             SwipeSpeed =300;
 
         // Create an instance of the dice and store a reference to it's rigidbody.
@@ -36,7 +37,7 @@ public class DiceRoll : MonoBehaviour
         DiceClone.useGravity = true;
 
         // Set the Dice velocity and rotation to the launch force in the fire position's forward direction.
-        DiceClone.velocity = SwipeSpeed/100 * SpawnLocation.forward;
+        DiceClone.velocity = SwipeSpeed/100 * (SpawnLocation.forward+ SpawnLocation.right);
         DiceClone.angularVelocity = SwipeSpeed / 50 * SpawnLocation.forward;
 
         // Reset the swipe Speed.(just a precaution)

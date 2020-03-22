@@ -28,6 +28,7 @@ public class SwipeEventManager : MonoBehaviour
     public UnityEngine.Events.UnityEvent BottomToTop;
     public UnityEngine.Events.UnityEvent LeftToRight;
     public UnityEngine.Events.UnityEvent RightToLeft;
+
     void Start()
     {
         minTime = 0.2f;
@@ -55,6 +56,7 @@ public class SwipeEventManager : MonoBehaviour
                 endPos = touch.position;
 
                 swipeDist = (endPos - startPos).magnitude;
+                //Debug.Log("swipeDist " + swipeDist);
                 swipeTime = endTime - startTime;
 
                 //if it was not an accidental touch/swipe (swipeTime>minTime)
@@ -79,13 +81,13 @@ public class SwipeEventManager : MonoBehaviour
             //I want to know if the swipe was left to right or right to left
             if(distance.x>0)
             {
-                Debug.Log("Right Swipe");
-                Invoke("RightToLeft", 0);
+                //Debug.Log("Right Swipe");
+                RightToLeft.Invoke();
             }
             else if (distance.x < 0)
             {
-                Debug.Log("Left Swipe");
-                Invoke("LeftToRight", 0);
+                //Debug.Log("Left Swipe");
+                LeftToRight.Invoke();
             }
         }
         else if (Mathf.Abs(distance.x) < Mathf.Abs(distance.y))
@@ -94,13 +96,13 @@ public class SwipeEventManager : MonoBehaviour
             //I want to know if the swipe was top to bottom or bottom to top
             if (distance.y > 0)
             {
-                Debug.Log("Up Swipe");
-                Invoke("BottomToTop", 0);
+                //Debug.Log("Up Swipe");
+                BottomToTop.Invoke();
             }
             else if (distance.y < 0)
             {
-                Debug.Log("Down Swipe");
-                Invoke("TopToBottom", 0);
+                //Debug.Log("Down Swipe");
+                TopToBottom.Invoke();
             }
         }
     }

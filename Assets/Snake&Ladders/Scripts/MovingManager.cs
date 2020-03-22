@@ -14,6 +14,7 @@ public class MovingManager : MonoBehaviour
     private GameObject Manager;
     PlayerAnimation playerAnimation;
     UIManager uiManager;
+    SwipeEventManager swipeEventManager;
 
     //Variables
     //dices
@@ -47,8 +48,11 @@ public class MovingManager : MonoBehaviour
         //check that the manager exists
         Manager = GameObject.FindGameObjectWithTag("manager");
         if (Manager != null)
+        {
             playerAnimation = Manager.GetComponent<PlayerAnimation>();
             uiManager = Manager.GetComponent<UIManager>();
+            swipeEventManager = Manager.GetComponent<SwipeEventManager>();
+        }
 
         //find all tiles and order them alphabetically
         Tiles = GameObject.FindGameObjectsWithTag("tile").OrderBy(go => go.name).ToArray();
@@ -69,6 +73,14 @@ public class MovingManager : MonoBehaviour
             PlayerTwo.transform.DOMove(Tiles[0].transform.position, 0);
         else
             return;
+    }
+
+    private void Update()
+    {
+        if (myTurn)
+            swipeEventManager.enabled = true;
+        else if(!myTurn)
+            swipeEventManager.enabled = false;
     }
 
     //resetThePlayers
@@ -153,7 +165,7 @@ public class MovingManager : MonoBehaviour
 
             //if I land on a specific ladder tile move me up
             //if I land on a specific snake tile move me down
-            if (LastPlayerRoll == 3 || LastPlayerRoll == 11)
+            if (LastPlayerRoll == 3 || LastPlayerRoll == 11 || LastPlayerRoll == 22)
             {
                 //Vector3 Firstquarter = new Vector3(90, 0, 0);
 
@@ -175,7 +187,7 @@ public class MovingManager : MonoBehaviour
                 //update the current position
                 LastPlayerRoll = LastPlayerRoll + Ladder;
             }
-            else if(LastPlayerRoll == 13 || LastPlayerRoll == 17)
+            else if(LastPlayerRoll == 13 || LastPlayerRoll == 17 || LastPlayerRoll == 32)
             {
                 //flip the tile I am currently on and move me to the new position
                 Sequence FlipAndMoveStart = DOTween.Sequence();
@@ -280,7 +292,7 @@ public class MovingManager : MonoBehaviour
             LastCpuRoll = LastCpuRoll + diceRoll;
 
             //if I land on a specific ladder tile move me up
-            if (LastCpuRoll == 3 || LastCpuRoll == 11)
+            if (LastCpuRoll == 3 || LastCpuRoll == 11 || LastCpuRoll == 22)
             {
                 //flip the tile I am currently on and move me to the new position
                 Sequence FlipAndMoveStart = DOTween.Sequence();
@@ -300,7 +312,7 @@ public class MovingManager : MonoBehaviour
                 //update the current position
                 LastCpuRoll = LastCpuRoll + Ladder;
             }
-            else if (LastCpuRoll == 13 || LastCpuRoll == 17)
+            else if (LastCpuRoll == 13 || LastCpuRoll == 17 || LastCpuRoll == 32)
             {
                 //flip the tile I am currently on and move me to the new position
                 Sequence FlipAndMoveStart = DOTween.Sequence();
