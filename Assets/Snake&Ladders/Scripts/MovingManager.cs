@@ -11,6 +11,9 @@ public class MovingManager : MonoBehaviour
     private GameObject PlayerOne;
     private GameObject PlayerTwo;
 
+    private GameObject Manager;
+    PlayerAnimation playerAnimation;
+
     //Variables
     //dices
     public int diceRoll;
@@ -33,6 +36,11 @@ public class MovingManager : MonoBehaviour
 
     private void Awake()
     {
+        //
+        Manager = GameObject.FindGameObjectWithTag("manager");
+        if (Manager != null)
+            playerAnimation = Manager.GetComponent<PlayerAnimation>();
+
         //find all tiles and order them alphabetically
         Tiles = GameObject.FindGameObjectsWithTag("tile").OrderBy(go => go.name).ToArray();
         if (GameObject.FindGameObjectsWithTag("tile").Length == 0)
@@ -69,7 +77,7 @@ public class MovingManager : MonoBehaviour
     IEnumerator MovePlayerOne()
     {
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(.5f);
 
         if (LastPlayerRoll < Tiles.Length)
         {
@@ -107,7 +115,9 @@ public class MovingManager : MonoBehaviour
 
             //swich turns
             myTurn = !myTurn;
-            Invoke("DiceRoll", 1);
+            playerAnimation.Excitement();
+
+            //Invoke("playerAnimation.", 1);
         }
         else if (LastCpuRoll >= Tiles.Length)
         {

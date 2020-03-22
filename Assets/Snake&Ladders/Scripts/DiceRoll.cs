@@ -9,6 +9,7 @@ public class DiceRoll : MonoBehaviour
 
     //spawn object and location
     public Rigidbody Dice;
+    Rigidbody DiceClone;
     public Transform SpawnLocation;
 
     //variables
@@ -28,22 +29,13 @@ public class DiceRoll : MonoBehaviour
         SwipeSpeed =300;
 
         // Create an instance of the dice and store a reference to it's rigidbody.
-        Rigidbody DiceInstance = Instantiate(Dice, SpawnLocation.position, SpawnLocation.rotation) as Rigidbody;
-        DiceInstance.useGravity = true;
+        DiceClone = Instantiate(Dice, SpawnLocation.position, SpawnLocation.rotation) as Rigidbody;
+        DiceClone.useGravity = true;
 
         // Set the Dice velocity to the launch force in the fire position's forward direction.
-        DiceInstance.velocity = SwipeSpeed/100 * SpawnLocation.forward; ;
+        DiceClone.velocity = SwipeSpeed/100 * SpawnLocation.forward; ;
 
         // Reset the swipe Speed.(just a precaution)
         SwipeSpeed = MinSpeed;
-
-        Invoke("DestroyGameObject", 3);
     }
-
-    //destroy the dice after rolling it
-    void DestroyGameObject()
-    {
-        Destroy(Dice);
-    }
-
 }
