@@ -8,7 +8,7 @@ public class FX : MonoBehaviour
    
     public void StartPlaying()
     {
-        Invoke("FXExplosion", 2.5f);
+        Invoke("FXExplosion", 1f);
     }
 
     public void FXExplosion()

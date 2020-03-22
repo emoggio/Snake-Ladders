@@ -7,7 +7,7 @@ using System.Linq;
 public class MovingManager : MonoBehaviour
 {
     //gameobjects
-    private GameObject[] Tiles;
+    public GameObject[] Tiles;
     private GameObject PlayerOne;
     private GameObject PlayerTwo;
 
@@ -129,7 +129,7 @@ public class MovingManager : MonoBehaviour
     {
         yield return new WaitForSeconds(.5f);
 
-        if (LastPlayerRoll + diceRoll < Tiles.Length)
+        if (LastPlayerRoll + diceRoll < (Tiles.Length-1))
         {
             for (i = 0; i <= diceRoll; i++)
             {
@@ -214,10 +214,11 @@ public class MovingManager : MonoBehaviour
             //make the other player excited
             playerAnimation.Excitement();
         }
-        else if (LastPlayerRoll + diceRoll >= Tiles.Length)
+        else if (LastPlayerRoll + diceRoll >= (Tiles.Length - 1))
         {
             //for (i = 0; i <= diceRoll; i++)
-            diceRoll = Mathf.Abs(Tiles.Length - (LastPlayerRoll + diceRoll));
+            diceRoll = Mathf.Abs((Tiles.Length-1) - (LastPlayerRoll + diceRoll));
+            Debug.Log(diceRoll);
             for (i = 0; i <= diceRoll; i++)
             {
                 //amount  by which the player is raised on move
@@ -257,7 +258,7 @@ public class MovingManager : MonoBehaviour
     {
         yield return new WaitForSeconds(.5f);
 
-        if (LastCpuRoll + diceRoll < Tiles.Length)
+        if (LastCpuRoll + diceRoll < (Tiles.Length-1))
         {
             for (i = 0; i <= diceRoll; i++)
             {
@@ -336,9 +337,9 @@ public class MovingManager : MonoBehaviour
             //switch turns
             myTurn = !myTurn;
         }
-        else if (LastCpuRoll + diceRoll >= Tiles.Length)
+        else if (LastCpuRoll + diceRoll >= (Tiles.Length-1))
         {
-            diceRoll = Mathf.Abs(Tiles.Length - (LastCpuRoll + diceRoll));
+            diceRoll = Mathf.Abs((Tiles.Length - 1) - (LastCpuRoll + diceRoll));
             for (i = 0; i <= diceRoll; i++)
             {
                 //amount  by which the player is raised on move
