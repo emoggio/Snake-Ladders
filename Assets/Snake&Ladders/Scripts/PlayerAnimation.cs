@@ -30,13 +30,13 @@ public class PlayerAnimation : MonoBehaviour
     private void Awake()
     {
         Manager = GameObject.FindGameObjectWithTag("manager");
-        if(Manager!= null)
+        if (Manager != null)
             movingManager = Manager.GetComponent<MovingManager>();
 
         PlayerOne = GameObject.FindGameObjectWithTag("Player");
         PlayerTwo = GameObject.FindGameObjectWithTag("cpu");
 
-        if (PlayerOne!=null)
+        if (PlayerOne != null)
         {
             for (int i = 0; i < PlayerOne.transform.childCount; i++)
             {
@@ -54,7 +54,7 @@ public class PlayerAnimation : MonoBehaviour
             }
         }
 
-        if (FigureOne!=null)
+        if (FigureOne != null)
             FigureOne.transform.DOLocalMoveY(Gitter, animationTime).SetEase(Ease.InOutQuad).SetLoops(-1, LoopType.Yoyo);
 
         if (FigureTwo != null)

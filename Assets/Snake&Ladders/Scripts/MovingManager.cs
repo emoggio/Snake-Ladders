@@ -22,6 +22,13 @@ public class MovingManager : MonoBehaviour
     public int LastCpuRoll = 0;
     private int i;
 
+    //snakes and ladders jumps
+    private int Ladder = 5;
+    private int Snake = 7;
+    
+    //tile rotation
+    private Vector3 Firstquarter = new Vector3(90, 0, 0);
+
     //turns
     public bool myTurn = true;
 
@@ -67,7 +74,7 @@ public class MovingManager : MonoBehaviour
     //roll the dice
     public void DiceRoll()
     {
-        diceRoll = (Random.Range(1, 6));
+        diceRoll = (Random.Range(3, 4));
 
         if (myTurn)
         {
@@ -121,22 +128,66 @@ public class MovingManager : MonoBehaviour
             //pick up from your last tile
             LastPlayerRoll = LastPlayerRoll + diceRoll;
 
+            //if I land on a specific ladder tile move me up
+            //if I land on a specific snake tile move me down
+            if (LastPlayerRoll == 3 || LastPlayerRoll == 11)
+            {
+                //Vector3 Firstquarter = new Vector3(90, 0, 0);
+
+                //flip the tile I am currently on and move me to the new position
+                Sequence FlipAndMoveStart = DOTween.Sequence();
+                FlipAndMoveStart.PrependInterval(animationTime/10)
+                    .Append(Tiles[LastPlayerRoll].transform.DORotate((Firstquarter * -1), animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Join(PlayerOne.transform.DORotate(Firstquarter * -1, animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Append(PlayerOne.transform.DOMove(Tiles[LastPlayerRoll + Ladder].transform.position, 0))
+                    .Append(Tiles[LastPlayerRoll].transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic));
+
+                //simultaneously flip the tile where I should land on
+                Sequence FlipAndMoveEnd = DOTween.Sequence();
+                FlipAndMoveEnd.PrependInterval(animationTime / 10)
+                    .Append(Tiles[LastPlayerRoll+Ladder].transform.DORotate((Firstquarter * -1), animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Append(PlayerOne.transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic))
+                    .Join(Tiles[LastPlayerRoll+Ladder].transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic));
+
+                //update the current position
+                LastPlayerRoll = LastPlayerRoll + Ladder;
+            }
+            else if(LastPlayerRoll == 13 || LastPlayerRoll == 17)
+            {
+                //flip the tile I am currently on and move me to the new position
+                Sequence FlipAndMoveStart = DOTween.Sequence();
+                FlipAndMoveStart.PrependInterval(animationTime / 10)
+                    .Append(Tiles[LastPlayerRoll].transform.DORotate((Firstquarter * -1), animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Join(PlayerOne.transform.DORotate(Firstquarter * -1, animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Append(PlayerOne.transform.DOMove(Tiles[LastPlayerRoll - Snake].transform.position, 0))
+                    .Append(Tiles[LastPlayerRoll].transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic));
+
+                //simultaneously flip the tile where I should land on
+                Sequence FlipAndMoveEnd = DOTween.Sequence();
+                FlipAndMoveEnd.PrependInterval(animationTime / 10)
+                    .Append(Tiles[LastPlayerRoll - Snake].transform.DORotate((Firstquarter * -1), animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Append(PlayerOne.transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic))
+                    .Join(Tiles[LastPlayerRoll - Snake].transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic));
+
+                //update the current position
+                LastPlayerRoll = LastPlayerRoll - Snake;
+            }
+
             //swich turns
             myTurn = !myTurn;
+            //make the other player excited
             playerAnimation.Excitement();
-
-            //Invoke("playerAnimation.", 1);
         }
         else if (LastCpuRoll >= Tiles.Length)
         {
             Debug.Log("you Win");
-        }
+        }    
     }
 
     //cpu
     IEnumerator MovePlayerTwo()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(.5f);
 
         if (LastCpuRoll < Tiles.Length)
         {
@@ -172,6 +223,49 @@ public class MovingManager : MonoBehaviour
             //pick up from your last tile
             LastCpuRoll = LastCpuRoll + diceRoll;
 
+            //if I land on a specific ladder tile move me up
+            if (LastCpuRoll == 3 || LastCpuRoll == 11)
+            {
+                //flip the tile I am currently on and move me to the new position
+                Sequence FlipAndMoveStart = DOTween.Sequence();
+                FlipAndMoveStart.PrependInterval(animationTime / 10)
+                    .Append(Tiles[LastCpuRoll].transform.DORotate((Firstquarter * -1), animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Join(PlayerTwo.transform.DORotate(Firstquarter * -1, animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Append(PlayerTwo.transform.DOMove(Tiles[LastCpuRoll + Ladder].transform.position, 0))
+                    .Append(Tiles[LastCpuRoll].transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic));
+
+                //simultaneously flip the tile where I should land on
+                Sequence FlipAndMoveEnd = DOTween.Sequence();
+                FlipAndMoveEnd.PrependInterval(animationTime / 10)
+                    .Append(Tiles[LastCpuRoll + Ladder].transform.DORotate((Firstquarter * -1), animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Append(PlayerTwo.transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic))
+                    .Join(Tiles[LastCpuRoll + Ladder].transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic));
+
+                //update the current position
+                LastCpuRoll = LastCpuRoll + Ladder;
+            }
+            else if (LastCpuRoll == 13 || LastCpuRoll == 17)
+            {
+                //flip the tile I am currently on and move me to the new position
+                Sequence FlipAndMoveStart = DOTween.Sequence();
+                FlipAndMoveStart.PrependInterval(animationTime / 10)
+                    .Append(Tiles[LastCpuRoll].transform.DORotate((Firstquarter * -1), animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Join(PlayerTwo.transform.DORotate(Firstquarter * -1, animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Append(PlayerTwo.transform.DOMove(Tiles[LastCpuRoll - Snake].transform.position, 0))
+                    .Append(Tiles[LastCpuRoll].transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic));
+
+                //simultaneously flip the tile where I should land on
+                Sequence FlipAndMoveEnd = DOTween.Sequence();
+                FlipAndMoveEnd.PrependInterval(animationTime / 10)
+                    .Append(Tiles[LastCpuRoll - Snake].transform.DORotate((Firstquarter * -1), animationTime, RotateMode.LocalAxisAdd).SetEase(Ease.InCubic))
+                    .Append(PlayerTwo.transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic))
+                    .Join(Tiles[LastCpuRoll - Snake].transform.DORotate((Firstquarter * 3) * -1, animationTime * 3, RotateMode.LocalAxisAdd).SetEase(Ease.OutCubic));
+
+                //update the current position
+                LastCpuRoll = LastCpuRoll - Snake;
+            }
+
+            //switch turns
             myTurn = !myTurn;
         }
         else if (LastCpuRoll >= Tiles.Length)
