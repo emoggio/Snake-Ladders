@@ -80,7 +80,6 @@ public class UIManager : MonoBehaviour
 
             YouWin.SetActive(false);
         }
-
     }
 
     public void UpdateDiceRollPlayer()

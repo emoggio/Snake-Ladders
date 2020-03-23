@@ -11,10 +11,15 @@ public class MovingManager : MonoBehaviour
     private GameObject PlayerOne;
     private GameObject PlayerTwo;
 
+    //scripts references
     private GameObject Manager;
     PlayerAnimation playerAnimation;
     UIManager uiManager;
     SwipeEventManager swipeEventManager;
+
+    //canvas group
+    public GameObject YourTurn;
+    CanvasGroup YourTurnCG;
 
     //Variables
     //dices
@@ -73,6 +78,10 @@ public class MovingManager : MonoBehaviour
             PlayerTwo.transform.DOMove(Tiles[0].transform.position, 0);
         else
             return;
+
+        //check if the text exist and grab the CG reference
+        if (YourTurn != null)
+            YourTurnCG = YourTurn.GetComponent<CanvasGroup>();
     }
 
     private void Update()
@@ -110,9 +119,14 @@ public class MovingManager : MonoBehaviour
         diceRoll = (Random.Range(1, 6));
 
         if (myTurn)
+        {
             uiManager.UpdateDiceRollPlayer();
+            DOTween.To(() => YourTurnCG.alpha, x => YourTurnCG.alpha = x, 0, animationTime);
+        }
         else if (!myTurn)
+        {
             uiManager.UpdateDiceRollCpu();
+        }
     }
 
     //moveThePlayers
@@ -210,6 +224,7 @@ public class MovingManager : MonoBehaviour
 
             //swich turns
             myTurn = !myTurn;
+            uiManager.PlayerDiceRoll.text = 0.ToString();
 
             //make the other player excited
             playerAnimation.Excitement();
@@ -342,6 +357,8 @@ public class MovingManager : MonoBehaviour
 
             //switch turns
             myTurn = !myTurn;
+            DOTween.To(() => YourTurnCG.alpha, x => YourTurnCG.alpha = x, 1, animationTime);
+            uiManager.CpuDiceRoll.text = 0.ToString();
         }
         else if (LastCpuRoll + diceRoll >= (Tiles.Length-1))
         {
