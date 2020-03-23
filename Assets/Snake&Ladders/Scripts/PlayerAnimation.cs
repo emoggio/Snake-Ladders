@@ -73,7 +73,7 @@ public class PlayerAnimation : MonoBehaviour
                 var angle = new Vector3(0, Rotation * 360, 0);
 
                 Sequence spin = DOTween.Sequence();
-                spin.Append(PlayerOne.transform.DOLocalMoveY(ItsMe, animationTime).SetEase(Ease.InOutQuad).SetLoops(2, LoopType.Yoyo))
+                spin.Append(FigureOne.transform.DOLocalMoveY(ItsMe, animationTime).SetEase(Ease.InOutQuad).SetLoops(2, LoopType.Yoyo))
                     .Join(FigureOne.transform.DORotate(angle, animationTime * Rotation, RotateMode.LocalAxisAdd).SetEase(Ease.InOutQuad))
                     .AppendCallback(movingManager.moveThePlayers);
             }
@@ -85,7 +85,7 @@ public class PlayerAnimation : MonoBehaviour
                 movingManager.DiceRoll();
 
                 Sequence spin = DOTween.Sequence();
-                spin.Append(PlayerTwo.transform.DOLocalMoveY(ItsMe, animationTime).SetEase(Ease.InOutQuad).SetLoops(2, LoopType.Yoyo))
+                spin.Append(FigureTwo.transform.DOLocalMoveY(ItsMe, animationTime).SetEase(Ease.InOutQuad).SetLoops(2, LoopType.Yoyo))
                     .Join(FigureTwo.transform.DORotate(angle, animationTime * Rotation, RotateMode.LocalAxisAdd).SetEase(Ease.InOutQuad))
                     .AppendCallback(movingManager.moveThePlayers);
             }

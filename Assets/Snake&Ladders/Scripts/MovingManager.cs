@@ -217,7 +217,7 @@ public class MovingManager : MonoBehaviour
         else if (LastPlayerRoll + diceRoll >= (Tiles.Length - 1))
         {
             //for (i = 0; i <= diceRoll; i++)
-            diceRoll = Mathf.Abs((Tiles.Length-1) - (LastPlayerRoll + diceRoll));
+            diceRoll = Mathf.Abs((Tiles.Length-1) - LastPlayerRoll);
             Debug.Log(diceRoll);
             for (i = 0; i <= diceRoll; i++)
             {
@@ -245,11 +245,17 @@ public class MovingManager : MonoBehaviour
                         .Append(PlayerOne.transform.DOMoveY(Tiles[i + LastPlayerRoll].transform.position.y, animationTime / 2).SetEase(Ease.InOutCubic));
 
                     yield return new WaitForSeconds(animationTime + 0.5f);
-                }
+                }    
             }
 
-            uiManager.Win();
-            Debug.Log("you Win");
+            if (LastPlayerRoll + diceRoll >= (Tiles.Length - 1))
+            {
+                uiManager.Win();
+                Debug.Log("you Win");
+            }
+
+            //uiManager.Win();
+            //Debug.Log("you Win");
         }    
     }
 
@@ -339,7 +345,7 @@ public class MovingManager : MonoBehaviour
         }
         else if (LastCpuRoll + diceRoll >= (Tiles.Length-1))
         {
-            diceRoll = Mathf.Abs((Tiles.Length - 1) - (LastCpuRoll + diceRoll));
+            diceRoll = Mathf.Abs((Tiles.Length - 1) - LastCpuRoll);
             for (i = 0; i <= diceRoll; i++)
             {
                 //amount  by which the player is raised on move
@@ -366,11 +372,16 @@ public class MovingManager : MonoBehaviour
                         .Append(PlayerTwo.transform.DOMoveY(Tiles[i + LastCpuRoll].transform.position.y, animationTime / 2).SetEase(Ease.InOutCubic));
 
                     yield return new WaitForSeconds(animationTime + 0.5f);
-                }
+                }          
             }
 
-            uiManager.Lose();
-            Debug.Log("you Lose");
+            if (LastCpuRoll + diceRoll >= (Tiles.Length - 1))
+            {
+                uiManager.Lose();
+                Debug.Log("you Lose");
+            }
+            //uiManager.Lose();
+            //Debug.Log("you Lose");
         }
     }
 }
