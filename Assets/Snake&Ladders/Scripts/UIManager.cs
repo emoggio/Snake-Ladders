@@ -30,6 +30,7 @@ public class UIManager : MonoBehaviour
     [Range(0.1f, 10)]
     public float animationTime;
 
+    //make sure that all the canvase are in the correct state and transparency setting
     private void Awake()
     {
         Manager = GameObject.FindGameObjectWithTag("manager");
@@ -82,16 +83,19 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    //update UI with Player dice roll
     public void UpdateDiceRollPlayer()
     {
         PlayerDiceRoll.text = movingManager.diceRoll.ToString();
     }
 
+    //update UI with Cpu dice roll
     public void UpdateDiceRollCpu()
     {
         CpuDiceRoll.text = movingManager.diceRoll.ToString();
     }
 
+    //start playing, hide the canvs make sure its your turn
     public void pressPlay()
     {
         DOTween.To(() => PlayCG.alpha, x => PlayCG.alpha = x, 0, animationTime);
@@ -101,6 +105,7 @@ public class UIManager : MonoBehaviour
         swiping.enabled = true;
     }
 
+    //resume play after pause
     public void ResumeGame()
     {
         DOTween.To(() => ResumeCG.alpha, x => ResumeCG.alpha = x, 0, animationTime);
@@ -110,6 +115,7 @@ public class UIManager : MonoBehaviour
         swiping.enabled = true;
     }
 
+    //pause the game
     public void PauseGame()
     {
         DOTween.To(() => ResumeCG.alpha, x => ResumeCG.alpha = x, 1, animationTime);
@@ -125,12 +131,15 @@ public class UIManager : MonoBehaviour
         DOTween.To(() => YouWinCG.alpha, x => YouWinCG.alpha = x, 1, animationTime);
     }
 
+    //you lose canvas
     public void Lose()
     {
         YouLose.SetActive(true);
         DOTween.To(() => YouLoseCG.alpha, x => YouLoseCG.alpha = x, 1, animationTime);
     }
 
+
+    //rematch! reset UI, dice rolls and players position
     public void Replay()
     {
         if(YouWinCG.alpha!=0)

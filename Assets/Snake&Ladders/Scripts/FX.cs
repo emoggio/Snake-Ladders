@@ -6,11 +6,13 @@ public class FX : MonoBehaviour
 {
     public GameObject Explosion;
    
+    //particle explosion effect at start
     public void StartPlaying()
     {
         Invoke("FXExplosion", 1f);
     }
 
+    //destroy once is played
     public void FXExplosion()
     {
         GameObject explostion = Instantiate(Explosion, transform.position, Quaternion.identity);

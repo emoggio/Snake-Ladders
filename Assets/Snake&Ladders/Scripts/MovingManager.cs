@@ -84,6 +84,7 @@ public class MovingManager : MonoBehaviour
             YourTurnCG = YourTurn.GetComponent<CanvasGroup>();
     }
 
+    //check who's turn it is and make sure I can't roll the dice when the cpu is playing
     private void Update()
     {
         if (myTurn)
@@ -268,9 +269,6 @@ public class MovingManager : MonoBehaviour
                 uiManager.Win();
                 Debug.Log("you Win");
             }
-
-            //uiManager.Win();
-            //Debug.Log("you Win");
         }    
     }
 
@@ -397,8 +395,6 @@ public class MovingManager : MonoBehaviour
                 uiManager.Lose();
                 Debug.Log("you Lose");
             }
-            //uiManager.Lose();
-            //Debug.Log("you Lose");
         }
     }
 }

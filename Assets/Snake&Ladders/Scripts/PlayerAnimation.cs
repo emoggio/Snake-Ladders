@@ -29,7 +29,9 @@ public class PlayerAnimation : MonoBehaviour
     [Range(0.1f, 10)]
     public float animationTime;
 
-
+    //Find the player gameobject and its child
+    //This would allow me to implement a start menu where I could choose a different caracter for each player,
+    // --> and not having a preset one like now
     private void Awake()
     {
         Manager = GameObject.FindGameObjectWithTag("manager");
@@ -64,6 +66,7 @@ public class PlayerAnimation : MonoBehaviour
             FigureTwo.transform.DOLocalMoveY(Gitter, animationTime).SetEase(Ease.InOutQuad).SetLoops(-1, LoopType.Yoyo);
     }
 
+    //Show some excitement (jump and turn) when its your turn
     public void Excitement()
     {
         if (Manager != null)
